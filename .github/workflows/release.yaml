@@ -313,7 +313,22 @@ jobs:
           upload_url: ${{ needs.create-release.outputs.url }}
           asset_path: ./kime_amd64.deb
           asset_name: kime_${{ matrix.name }}_${{ github.ref }}_amd64.deb
-          asset_content_type: application/x-xz
+          asset_content_type: application/x-xz          
+
+      - name: Create rpm
+        if: ${{ matrix.pkg == 'rpm' }}
+        run: scripts/release-rpm.sh .
+
+      - name: Upload rpm
+        if: ${{ matrix.pkg == 'rpm' }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.url }}
+          asset_path: ./kime_amd64.rpm
+          asset_name: kime_${{ matrix.name }}_${{ github.ref }}_x86_64.rpm
+          asset_content_type: application/x-rpm
 
       - name: Create zst
         if: ${{ matrix.pkg == 'zst' }}
